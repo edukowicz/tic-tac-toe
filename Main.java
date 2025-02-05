@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class Main{
    
     public static void printBoard(String[][] board) {
@@ -15,10 +17,71 @@ public class Main{
             return "X";
         }
     }
+    public static boolean isFull(String[][] board){
+        boolean full = true;
+        for(int r = 0; r < board.length; r++) {
+            for(int c = 0; c < board[r].length; c++) {
+                if(board[r][c].equals(" ")) {
+                    full = false;
+                }
+            }
+        }
+        return full;
+    }
+    public static boolean checkWin(String[][] board) {
+        return checkRows(board) || checkColumns(board) || checkDiagonals(board);
+    }
+    public static boolean checkRows(String[][]board) {
+        for(int r = 0; r < board.length; r++) {
+            if(board[r][0].equals(board[r][1]) && board[r][1].equals(board[r][2]) && !board[r][0].equals(" ")) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public static boolean checkColumns(String[][] board){
+        for(int c = 0; c < board[0].length; c++) {
+            if(board[0][c].equals(board[1][c]) && board[1][c].equals(board[2][c]) && !board[0][c].equals(" ")) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public static boolean checkDiagonals(String[][] board) {
+        if(board[0][0].equals(board[1][1]) && board[1][1].equals(board[2][2]) && !board[0][0].equals(" ")){
+            return true;
+        }
+        else if (board[0][2].equals(board[1][1]) && board[1][1].equals(board[2][0]) && !board[0][2].equals(" ")){
+            return true;
+        }
+        return false;
+    }
     public static void main(String[] args) {
         String[][] board = {{" ", " ", " "}, {" ", " ", " "}, {" ", " ", " "}};
-        printBoard(board);
-
+        Scanner kb = new Scanner(System.in);
         String playerTurn = "X";
+
+        while(!isFull(board) && !checkWin(board)) {
+            printBoard(board);
+            System.out.print("");
+            System.out.println(playerTurn + "'s turn. Pick a row:");
+            int row = kb.nextInt();
+            System.out.println("Pick a column:");
+            int column = kb.nextInt();
+            if(row >= 0 && row <= 2 && column >= 0 && column <= 2 && board[row][column].equals(" ")){
+                board[row][column] = playerTurn;
+                playerTurn = swap(playerTurn); 
+            }
+            else {
+                System.out.println("Sorry that space is taken. Let's try again.");
+            }
+            if(checkWin(board)) {
+                printBoard(board);
+                playerTurn = swap(playerTurn);
+                System.out.println(playerTurn + " won the game!");
+            }
+        }
+
+        
     }
 }
